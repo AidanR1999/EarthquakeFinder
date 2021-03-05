@@ -13,41 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAdapter.ViewHolder> {
-    ArrayList titles;
-    ArrayList longitudes;
-    ArrayList latitudes;
+    ArrayList<Earthquake> earthquakes;
     Context context;
 
     // Constructor for initialization
     public EarthquakeListAdapter(Context context, ArrayList<Earthquake> earthquakes) {
         this.context = context;
-        this.titles = getTitles(earthquakes);
-        this.longitudes = getLongitudes(earthquakes);
-        this.latitudes = getLatitudes(earthquakes);
-    }
-
-    private ArrayList<String> getLatitudes(ArrayList<Earthquake> earthquakes) {
-        ArrayList<String> latitudes = new ArrayList<>();
-        for(int i = 0; i < earthquakes.size(); ++i) {
-            latitudes.add(earthquakes.get(i).getLat());
-        }
-        return latitudes;
-    }
-
-    private ArrayList<String> getLongitudes(ArrayList<Earthquake> earthquakes) {
-        ArrayList<String> longitudes = new ArrayList<>();
-        for(int i = 0; i < earthquakes.size(); ++i) {
-            longitudes.add(earthquakes.get(i).getLon());
-        }
-        return longitudes;
-    }
-
-    private ArrayList<String> getTitles(ArrayList<Earthquake> earthquakes) {
-        ArrayList<String> titles = new ArrayList<>();
-        for(int i = 0; i < earthquakes.size(); ++i) {
-            titles.add(earthquakes.get(i).getTitle());
-        }
-        return titles;
+        this.earthquakes = earthquakes;
     }
 
     @NonNull
@@ -66,26 +38,29 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
     @Override
     public void onBindViewHolder(@NonNull EarthquakeListAdapter.ViewHolder holder, int position) {
         // TypeCast Object to int type
-        holder.titleText.setText((String) titles.get(position));
-        holder.latLongText.setText((String) latitudes.get(position) + " " + longitudes.get(position));
+        holder.titleText.setText((String) earthquakes.get(position).getLocation());
+        holder.magnitude.setText((String) earthquakes.get(position).getMagnitude());
+        holder.latLongText.setText((String) earthquakes.get(position).getLat() + " " + earthquakes.get(position).getLon());
     }
 
     @Override
     public int getItemCount() {
         // Returns number of items
         // currently available in Adapter
-        return titles.size();
+        return earthquakes.size();
     }
 
     // Initializing the Views
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleText;
         TextView latLongText;
+        TextView magnitude;
 
         public ViewHolder(View view) {
             super(view);
             titleText = (TextView) view.findViewById(R.id.title);
-            latLongText = (TextView) view.findViewById(R.id.longitude);
+            latLongText = (TextView) view.findViewById(R.id.latLongText);
+            magnitude = (TextView) view.findViewById(R.id.magnitude);
         }
     }
 }

@@ -12,14 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="center">
-            <TextView
-                android:id="@+id/courseName"
-                android:text="earthquake"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+            android:layout_gravity="center"/>
 
         <TextView
             android:id="@+id/acknowledgement"

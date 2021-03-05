@@ -12,13 +12,19 @@
         android:layout_gravity="center">
         <TextView
             android:id="@+id/title"
-            android:text="title"
+            android:text=""
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
-            android:id="@+id/longitude"
-            android:text="longitude"
+            android:id="@+id/magnitude"
+            android:text=""
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/latLongText"
+            android:text=""
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

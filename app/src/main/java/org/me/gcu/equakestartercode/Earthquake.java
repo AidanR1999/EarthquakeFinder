@@ -1,5 +1,9 @@
 package org.me.gcu.equakestartercode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Earthquake {
     private String title;
     private String description;
@@ -27,6 +31,16 @@ public class Earthquake {
         this.category = category;
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public String getLocation() {
+        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
+        return split.get(1);
+    }
+
+    public String getMagnitude() {
+        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
+        return split.get(4);
     }
 
     public String getTitle() {
