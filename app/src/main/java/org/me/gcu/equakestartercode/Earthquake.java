@@ -1,43 +1,54 @@
 package org.me.gcu.equakestartercode;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Earthquake implements Serializable {
     private String title;
     private String description;
     private String link;
-    private String date;
+    private Date date;
     private String category;
+    private String location;
     private double lat;
     private double lon;
+    private double depth;
+    private double magnitude;
 
     public Earthquake() {
         this.title = "";
         this.description = "";
         this.link = "";
-        this.date = "";
+        this.date = new Date(System.currentTimeMillis());
         this.category = "";
         this.lat = 0.00;
         this.lon = 0.00;
     }
 
-    public double getDepth() {
-        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
-        return Double.parseDouble(split.get(3).substring(8, split.get(3).length() - 4));
+    public void setDepth(String description) {
+        List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
+        this.depth = Double.parseDouble(split.get(3).substring(8, split.get(3).length() - 4));
     }
 
-    public String getLocation() {
-        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
-        return split.get(1).substring(1);
+    public double getDepth() { return depth; }
+
+    public void setLocation(String description) {
+        List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
+        this.location = split.get(1).substring(1);
     }
 
-    public double getMagnitude() {
-        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
-        return Double.parseDouble(split.get(4).substring(split.get(4).length() - 3));
+    public String getLocation() { return location; }
+
+    public void setMagnitude(String description) {
+        List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
+        this.magnitude = Double.parseDouble(split.get(4).substring(split.get(4).length() - 3));
     }
+
+    public double getMagnitude() { return magnitude; }
 
     public String getTitle() {
         return title;
@@ -63,11 +74,11 @@ public class Earthquake implements Serializable {
         this.link = link;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

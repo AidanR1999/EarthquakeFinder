@@ -148,6 +148,11 @@ public class MainActivity extends AppCompatActivity
                             eq.setTitle(xpp.nextText());
                         } else if (xpp.getName().equals("description")) {
                             eq.setDescription(xpp.nextText());
+
+                            //set dependency values
+                            eq.setDepth(xpp.nextText());
+                            eq.setLocation(xpp.nextText());
+                            eq.setMagnitude(xpp.nextText());
                         } else if (xpp.getName().equals("link")) {
                             eq.setLink(xpp.nextText());
                         } else if (xpp.getName().equals("pubDate")) {
@@ -191,7 +196,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void loadFilterView(View v) {
-        Intent intent = new Intent(MainActivity.this, MapViewer.class);
+        Intent intent = new Intent(MainActivity.this, FilterView.class);
         Bundle args = new Bundle();
         args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
         intent.putExtra("BUNDLE", args);
