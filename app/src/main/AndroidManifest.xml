@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.me.gcu.equakestartercode">
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature android:name="android.hardware.type.watch" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -21,21 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EQuakeStarterCode"
         android:usesCleartextTraffic="true">
-        <uses-library
-            android:name="com.google.android.wearable"
-            android:required="true" />
 
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
 
         <activity
-            android:name=".FilterView"
-            android:label="@string/title_activity_filter_view">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,13 +49,11 @@
         <activity
             android:name=".MapViewer"
             android:label="@string/title_activity_map_viewer" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity
+            android:name=".FilterView"
+            android:label="@string/title_activity_filter_view" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
     </application>
 
 </manifest>

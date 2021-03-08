@@ -1,21 +1,24 @@
 package org.me.gcu.equakestartercode;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.wearable.activity.WearableActivity;
 import android.widget.TextView;
 
-public class FilterView extends WearableActivity {
+import androidx.appcompat.app.AppCompatActivity;
 
-    private TextView mTextView;
+import java.util.ArrayList;
+
+public class FilterView extends AppCompatActivity {
+
+    private ArrayList<Earthquake> earthquakes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_view);
 
-        mTextView = (TextView) findViewById(R.id.text);
-
-        // Enables Always-on
-        setAmbientEnabled();
+        Intent intent = getIntent();
+        Bundle args = intent.getBundleExtra("BUNDLE");
+        earthquakes = (ArrayList<Earthquake>) args.getSerializable("ARRAYLIST");
     }
 }
