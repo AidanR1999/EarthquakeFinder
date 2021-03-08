@@ -1,17 +1,18 @@
 package org.me.gcu.equakestartercode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Earthquake {
+public class Earthquake implements Serializable {
     private String title;
     private String description;
     private String link;
     private String date;
     private String category;
-    private String lat;
-    private String lon;
+    private double lat;
+    private double lon;
 
     public Earthquake() {
         this.title = "";
@@ -19,28 +20,23 @@ public class Earthquake {
         this.link = "";
         this.date = "";
         this.category = "";
-        this.lat = "";
-        this.lon = "";
+        this.lat = 0.00;
+        this.lon = 0.00;
     }
 
-    public Earthquake(String title, String description, String link, String date, String category, String lat, String lon) {
-        this.title = title;
-        this.description = description;
-        this.link = link;
-        this.date = date;
-        this.category = category;
-        this.lat = lat;
-        this.lon = lon;
+    public double getDepth() {
+        List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
+        return Double.parseDouble(split.get(3).substring(8, split.get(3).length() - 4));
     }
 
     public String getLocation() {
         List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
-        return split.get(1);
+        return split.get(1).substring(1);
     }
 
-    public String getMagnitude() {
+    public double getMagnitude() {
         List<String> split = new ArrayList<String>(Arrays.asList(this.description.split(";")));
-        return split.get(4);
+        return Double.parseDouble(split.get(4).substring(split.get(4).length() - 3));
     }
 
     public String getTitle() {
@@ -83,19 +79,19 @@ public class Earthquake {
         this.category = category;
     }
 
-    public String getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public String getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(String lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 }

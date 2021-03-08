@@ -3,7 +3,9 @@ package org.me.gcu.equakestartercode;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -30,12 +33,11 @@ import org.me.gcu.equakestartercode.R;
 
 public class MainActivity extends AppCompatActivity
 {
-    private TextView rawDataDisplay;
-    private Button startButton;
     private String result = "";
-    private String url1="";
     private String urlSource="http://quakes.bgs.ac.uk/feeds/MhSeismology.xml";
     private RecyclerView recyclerView;
+    private ArrayList<Earthquake> earthquakes;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -45,13 +47,24 @@ public class MainActivity extends AppCompatActivity
         Log.e("MyTag","in onCreate");
         // Set up the raw links to the graphical components
         recyclerView = (RecyclerView) findViewById(R.id.lstEarthquake);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         Log.e("MyTag","after startButton");
         // More Code goes here
         startProgress();
+
+
+        // SetOnRefreshListener on SwipeRefreshLayout
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                startProgress();
+            }
+        });
     }
+
 
     public void startProgress()
     {
@@ -137,14 +150,14 @@ public class MainActivity extends AppCompatActivity
                             eq.setDescription(xpp.nextText());
                         } else if (xpp.getName().equals("link")) {
                             eq.setLink(xpp.nextText());
-                        } else if (xpp.getName().equals("date")) {
+                        } else if (xpp.getName().equals("pubDate")) {
                             eq.setDate(xpp.nextText());
                         } else if (xpp.getName().equals("category")) {
                             eq.setCategory(xpp.nextText());
                         } else if (xpp.getName().equals("lat")) {
-                            eq.setLat(xpp.nextText());
+                            eq.setLat(Double.parseDouble(xpp.nextText()));
                         } else if (xpp.getName().equals("long")) {
-                            eq.setLon(xpp.nextText());
+                            eq.setLon(Double.parseDouble(xpp.nextText()));
                         }
                     } else if (eventType == XmlPullParser.END_TAG) {
                         if (xpp.getName().equals("item")) {
@@ -153,6 +166,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     eventType = xpp.next();
                 }
+                earthquakes = list;
                 addEarthquakesToList(list);
             }
             catch (XmlPullParserException | IOException io) {
@@ -166,6 +180,22 @@ public class MainActivity extends AppCompatActivity
             recyclerView.setAdapter(adapter);
         }
 
+    }
+
+    public void loadMapView(View v) {
+        Intent intent = new Intent(MainActivity.this, MapViewer.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
+        intent.putExtra("BUNDLE", args);
+        startActivity(intent);
+    }
+
+    public void loadFilterView(View v) {
+        Intent intent = new Intent(MainActivity.this, MapViewer.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
+        intent.putExtra("BUNDLE", args);
+        startActivity(intent);
     }
 
 }
