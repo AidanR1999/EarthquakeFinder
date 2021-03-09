@@ -45,7 +45,7 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
     public void onBindViewHolder(@NonNull EarthquakeListAdapter.ViewHolder holder, int position) {
         // TypeCast Object to int type
         holder.titleText.setText((String) earthquakes.get(position).getLocation());
-        holder.date.setText("Date: " +  earthquakes.get(position).getDate());
+        holder.date.setText("Date: " +  earthquakes.get(position).getStringDate());
 
         //magnitude colour
         if(earthquakes.get(position).getMagnitude() > 2) {

@@ -37,7 +37,7 @@ public class EarthquakeInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
         //display
         title.setText(earthquake.getLocation());
         magnitude.setText("Magnitude: " + earthquake.getMagnitude());
-        date.setText(earthquake.getDate());
+        date.setText("Date: " + earthquake.getStringDate());
         latlong.setText(earthquake.getLat() + ", " + earthquake.getLon());
         depth.setText("Depth: " + earthquake.getDepth() + " km");
 

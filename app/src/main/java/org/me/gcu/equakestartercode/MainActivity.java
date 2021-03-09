@@ -23,7 +23,12 @@ import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -138,6 +143,7 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<Earthquake> list = new ArrayList<>();
                 Earthquake eq = new Earthquake();
 
+
                 while(eventType != XmlPullParser.END_DOCUMENT) {
                     if (eventType == XmlPullParser.START_DOCUMENT) {
                     } else if (eventType == XmlPullParser.START_TAG) {
@@ -147,16 +153,20 @@ public class MainActivity extends AppCompatActivity
                         if (xpp.getName().equals("title")) {
                             eq.setTitle(xpp.nextText());
                         } else if (xpp.getName().equals("description")) {
-                            eq.setDescription(xpp.nextText());
-
-                            //set dependency values
-                            eq.setDepth(xpp.nextText());
-                            eq.setLocation(xpp.nextText());
-                            eq.setMagnitude(xpp.nextText());
+                            String desc = xpp.nextText();
+                            eq.setDescription(desc);
                         } else if (xpp.getName().equals("link")) {
                             eq.setLink(xpp.nextText());
                         } else if (xpp.getName().equals("pubDate")) {
-                            eq.setDate(xpp.nextText());
+                            String text = xpp.nextText();
+                            String extractedString = text.substring(text.indexOf(",") + 2, text.length() - 9);
+
+                            List<String> split = new ArrayList<String>(Arrays.asList(extractedString.split(" ")));
+                            String formatted = split.get(0) + "-" + split.get(1) + "-" + split.get(2);
+
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+                            LocalDate date = LocalDate.parse(formatted, formatter);
+                            eq.setDate(date);
                         } else if (xpp.getName().equals("category")) {
                             eq.setCategory(xpp.nextText());
                         } else if (xpp.getName().equals("lat")) {
@@ -171,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     eventType = xpp.next();
                 }
+
                 earthquakes = list;
                 addEarthquakesToList(list);
             }

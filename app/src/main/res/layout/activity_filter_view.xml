@@ -13,12 +13,12 @@
         android:layout_height="126dp">
 
         <EditText
-            android:id="@+id/editTextDate"
+            android:id="@+id/dateStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="date"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextDate2"
+            app:layout_constraintBottom_toBottomOf="@+id/dateEnd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.283"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
             app:layout_constraintVertical_bias="0.246" />
 
         <EditText
-            android:id="@+id/editTextDate2"
+            android:id="@+id/dateEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -42,17 +42,22 @@
             android:id="@+id/cmdSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="filterResults"
             android:text="Filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.509"
-            app:layout_constraintStart_toEndOf="@+id/editTextDate2"
+            app:layout_constraintStart_toEndOf="@+id/dateEnd"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.833" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lstFiltered"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
