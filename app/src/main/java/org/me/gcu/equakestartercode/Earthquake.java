@@ -1,54 +1,60 @@
 package org.me.gcu.equakestartercode;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class Earthquake implements Serializable {
     private String title;
     private String description;
     private String link;
-    private Date date;
+    private LocalDate date;
     private String category;
-    private String location;
     private double lat;
     private double lon;
-    private double depth;
-    private double magnitude;
 
     public Earthquake() {
         this.title = "";
         this.description = "";
         this.link = "";
-        this.date = new Date(System.currentTimeMillis());
+        this.date = LocalDate.now();
         this.category = "";
         this.lat = 0.00;
         this.lon = 0.00;
     }
 
-    public void setDepth(String description) {
+    public double getDepth() {
         List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
-        this.depth = Double.parseDouble(split.get(3).substring(8, split.get(3).length() - 4));
+        try {
+            return Double.parseDouble(split.get(3).substring(8, split.get(3).length() - 4));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
-    public double getDepth() { return depth; }
-
-    public void setLocation(String description) {
+    public String getLocation() {
         List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
-        this.location = split.get(1).substring(1);
+        String location = split.get(1).substring(1);
+        if(location.equals("Location:  ")) {
+            return "Location: LOCATION NOT SPECIFIED";
+        }
+        return location;
     }
 
-    public String getLocation() { return location; }
-
-    public void setMagnitude(String description) {
+    public double getMagnitude() {
         List<String> split = new ArrayList<String>(Arrays.asList(description.split(";")));
-        this.magnitude = Double.parseDouble(split.get(4).substring(split.get(4).length() - 3));
+        try {
+            return Double.parseDouble(split.get(4).substring(split.get(4).length() - 3));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
-    public double getMagnitude() { return magnitude; }
+    public String getStringDate() {
+        return date.getDayOfWeek() + ", " + date.getDayOfMonth() + " " + date.getMonth() + " " + date.getYear();
+    }
 
     public String getTitle() {
         return title;
@@ -74,11 +80,11 @@ public class Earthquake implements Serializable {
         this.link = link;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
