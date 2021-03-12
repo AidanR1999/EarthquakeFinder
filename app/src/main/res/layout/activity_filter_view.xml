@@ -10,7 +10,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="126dp">
+        android:layout_height="178dp">
+
+        <Button
+            android:id="@+id/cmdBackToList"
+            android:layout_width="148dp"
+            android:layout_height="43dp"
+            android:text="Back to list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.048" />
 
         <EditText
             android:id="@+id/dateStart"
@@ -23,7 +35,7 @@
             app:layout_constraintHorizontal_bias="0.283"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.246" />
+            app:layout_constraintVertical_bias="0.457" />
 
         <EditText
             android:id="@+id/dateEnd"
@@ -42,7 +54,6 @@
             android:id="@+id/cmdSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="filterResults"
             android:text="Filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

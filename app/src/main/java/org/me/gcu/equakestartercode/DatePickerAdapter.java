@@ -2,6 +2,7 @@ package org.me.gcu.equakestartercode;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,7 @@ public class DatePickerAdapter extends DialogFragment {
 
         DatePickerDialog dialog = new DatePickerDialog(
                 getActivity(),
-                (DatePickerDialog.OnDateSetListener)getActivity(),
+                (DatePickerDialog.OnDateSetListener) getTargetFragment(),
                 year,
                 month,
                 dayOfMonth
@@ -36,6 +37,11 @@ public class DatePickerAdapter extends DialogFragment {
 
         dialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 1000);
         return dialog;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
     }
 
     public void setFlag(int i) {

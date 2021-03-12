@@ -1,10 +1,15 @@
 package org.me.gcu.equakestartercode;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,38 +23,37 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class MapViewer extends FragmentActivity implements OnMapReadyCallback {
+public class MapViewer extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ArrayList<Earthquake> earthquakes;
     private int index = -1;
+    private View view;
+    private Button cmdListView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_viewer);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.activity_map_viewer, container, false);
 
-        Intent intent = getIntent();
-        Bundle args = intent.getBundleExtra("BUNDLE");
-        index = intent.getIntExtra("index", -1);
+        cmdListView = (Button) view.findViewById(R.id.cmdListView);
+        cmdListView.setOnClickListener(this::OnClick);
 
-        earthquakes = (ArrayList<Earthquake>) args.getSerializable("ARRAYLIST");
+        Bundle args = requireArguments();
+        this.earthquakes = (ArrayList<Earthquake>) args.getSerializable("ARRAYLIST");
+        this.index = (int) args.getInt("index");
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -57,7 +61,7 @@ public class MapViewer extends FragmentActivity implements OnMapReadyCallback {
         Marker show = null;
 
         //config
-        EarthquakeInfoWindowAdapter adapter = new EarthquakeInfoWindowAdapter(this);
+        EarthquakeInfoWindowAdapter adapter = new EarthquakeInfoWindowAdapter(view.getContext());
         mMap.setInfoWindowAdapter(adapter);
 
         if(index == -1) {
@@ -67,8 +71,6 @@ public class MapViewer extends FragmentActivity implements OnMapReadyCallback {
         }
 
         for(int i = 0; i < earthquakes.size(); ++i) {
-
-
             LatLng location = new LatLng(earthquakes.get(i).getLat(), earthquakes.get(i).getLon());
 
             float colour;
@@ -101,7 +103,10 @@ public class MapViewer extends FragmentActivity implements OnMapReadyCallback {
     }
 
     public void OnClick(View v) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        Bundle args = new Bundle();
+        getParentFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.frameLayout, HomeFragment.class, args)
+                .commit();
     }
 }

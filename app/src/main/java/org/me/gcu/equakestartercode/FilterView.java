@@ -2,15 +2,23 @@ package org.me.gcu.equakestartercode;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.SQLOutput;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +27,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class FilterView extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class FilterView extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     private ArrayList<Earthquake> earthquakes;
     private TextView dateStartText;
@@ -28,42 +36,58 @@ public class FilterView extends AppCompatActivity implements DatePickerDialog.On
     private LocalDate dateStart;
     private LocalDate dateEnd;
     private RecyclerView recyclerView;
+    private View view;
+    private Button cmdSearch;
+    private Button cmdBackToList;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filter_view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.activity_filter_view, container, false);
 
-        Intent intent = getIntent();
-        Bundle args = intent.getBundleExtra("BUNDLE");
+        cmdSearch = (Button) view.findViewById(R.id.cmdSearch);
+        cmdSearch.setOnClickListener(this::filterResults);
+
+        cmdBackToList = (Button) view.findViewById(R.id.cmdBackToList);
+        cmdBackToList.setOnClickListener(this::returnToList);
+
+        Bundle args = requireArguments();
         this.earthquakes = (ArrayList<Earthquake>) args.getSerializable("ARRAYLIST");
+        return view;
+    }
 
-        recyclerView = (RecyclerView) findViewById(R.id.lstFiltered);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.lstFiltered);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         adapter = new DatePickerAdapter();
+        adapter.setTargetFragment(this, 1234);
 
-        this.dateStartText = (TextView) findViewById(R.id.dateStart);
-        this.dateEndText = (TextView) findViewById(R.id.dateEnd);
+        this.dateStartText = (TextView) view.findViewById(R.id.dateStart);
+        this.dateEndText = (TextView) view.findViewById(R.id.dateEnd);
 
         dateStartText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 adapter.setFlag(DatePickerAdapter.FLAG_START_DATE);
-                adapter.show(getSupportFragmentManager(), "DATE PICK");
+                adapter.show(getParentFragmentManager() , "DATE PICK");
             }
         });
         dateEndText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.setFlag(DatePickerAdapter.FLAG_END_DATE);
-                adapter.show(getSupportFragmentManager(), "DATE PICK");
+                adapter.show(getParentFragmentManager(), "DATE PICK");
             }
         });
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
         // Create a Calender instance
@@ -88,9 +112,10 @@ public class FilterView extends AppCompatActivity implements DatePickerDialog.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void filterResults(View v) {
         if(dateStart == null || dateStart == null || dateStart.isAfter(dateEnd)) {
-            Toast.makeText(this, "Invalid Date Range", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Invalid Date Range", Toast.LENGTH_SHORT).show();
         }
         else {
             ArrayList<Earthquake> filtered = new ArrayList<>();
@@ -100,8 +125,16 @@ public class FilterView extends AppCompatActivity implements DatePickerDialog.On
                     filtered.add(earthquakes.get(i));
                 }
             }
-            FilteredEarthquakeListAdapter adapter = new FilteredEarthquakeListAdapter(this, filtered);
+            FilteredEarthquakeListAdapter adapter = new FilteredEarthquakeListAdapter(view.getContext(), filtered);
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    public void returnToList(View v) {
+        Bundle args = new Bundle();
+        getParentFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.frameLayout, HomeFragment.class, args)
+                .commit();
     }
 }

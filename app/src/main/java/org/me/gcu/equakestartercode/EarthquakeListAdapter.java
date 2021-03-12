@@ -11,6 +11,7 @@ import android.widget.Adapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAdapter.ViewHolder> {
+public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAdapter.ViewHolder>  {
     ArrayList<Earthquake> earthquakes;
     Context context;
 
@@ -81,15 +82,16 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context ctx = v.getContext();
                     int index = getAdapterPosition();
 
-                    Intent intent = new Intent(ctx, MapViewer.class);
                     Bundle args = new Bundle();
                     args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
-                    intent.putExtra("BUNDLE", args);
-                    intent.putExtra("index", index);
-                    ctx.startActivity(intent);
+                    args.putInt("index", index);
+
+                    ((MainActivity)context).getSupportFragmentManager().beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace(R.id.frameLayout, MapViewer.class, args)
+                            .commit();
                 }
             });
         }
