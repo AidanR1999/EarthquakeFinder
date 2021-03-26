@@ -1,3 +1,4 @@
+//Aidan Rooney - S1911669
 package org.me.gcu.equakestartercode;
 
 import androidx.annotation.RequiresApi;
@@ -42,188 +43,54 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import org.me.gcu.equakestartercode.R;
 
+//displays the list of earthquakes in the last 100 days
 public class HomeFragment extends Fragment {
-    private String result = "";
-    private String urlSource="http://quakes.bgs.ac.uk/feeds/MhSeismology.xml";
+
+    //declare variables
     private RecyclerView recyclerView;
     private ArrayList<Earthquake> earthquakes;
     private SwipeRefreshLayout swipeRefreshLayout;
     private View view;
-    private Button cmdFilter;
-    private Button cmdMap;
 
+    //create the fragment view
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //inflate view
         view = inflater.inflate(R.layout.home_fragment_view, container, false);
 
-        Log.e("MyTag","in onCreate");
-        // Set up the raw links to the graphical components
+        //configure recycler view
         recyclerView = (RecyclerView) view.findViewById(R.id.lstEarthquake);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        Log.e("MyTag","after startButton");
-        // More Code goes here
-        startProgress();
 
+        //get earthquake data from main activity
+        Bundle args = requireArguments();
+        this.earthquakes = (ArrayList<Earthquake>) args.getSerializable("earthquakes");
 
-        cmdFilter = (Button) view.findViewById(R.id.cmdFilter);
-        cmdFilter.setOnClickListener(this::loadFilterView);
+        //add earthquakes to recycler view
+        addEarthquakesToList(earthquakes);
 
-        cmdMap = (Button) view.findViewById(R.id.cmdMap);
-        cmdMap.setOnClickListener(this::loadMapView);
-
-        // SetOnRefreshListener on SwipeRefreshLayout
+        //configure swipe refresh to refresh earthquake data
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                //reset refreshing
                 swipeRefreshLayout.setRefreshing(false);
-                startProgress();
+
+                //call startProgress to retrieve updated data
+                ((MainActivity) getActivity()).startProgress();
             }
         });
         return view;
     }
 
-    public void startProgress()
-    {
-        // Run network access on a separate thread;
-        new Thread(new HomeFragment.Task(urlSource)).start();
+    //adds earthquake info to recycler view
+    public void addEarthquakesToList(ArrayList<Earthquake> earthquakes) {
+        //display earthquakes
+        EarthquakeListAdapter adapter = new EarthquakeListAdapter(view.getContext(), earthquakes);
+        recyclerView.setAdapter(adapter);
     }
 
-    // Need separate thread to access the internet resource over network
-    // Other neater solutions should be adopted in later iterations.
-    private class Task implements Runnable
-    {
-        private String url;
-
-        public Task(String aurl)
-        {
-            url = aurl;
-        }
-        @Override
-        public void run()
-        {
-
-            URL aurl;
-            URLConnection yc;
-            BufferedReader in = null;
-            String inputLine = "";
-
-            try
-            {
-                aurl = new URL(url);
-                yc = aurl.openConnection();
-                in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-
-                int i = 0;
-                while ((inputLine = in.readLine()) != null)
-                {
-                    result = result + inputLine;
-                    i++;
-                }
-                in.close();
-            }
-            catch (IOException ae)
-            {
-                Log.e("MyTag", "ioexception in run");
-            }
-
-
-            getActivity().runOnUiThread(new Runnable()
-            {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                public void run() {
-                    parseData(result);
-                }
-            });
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        public void parseData(String result) {
-            try {
-                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                factory.setNamespaceAware(true);
-                XmlPullParser xpp = factory.newPullParser();
-
-                xpp.setInput(new StringReader(result));
-                int eventType = xpp.getEventType();
-
-                ArrayList<Earthquake> list = new ArrayList<>();
-                Earthquake eq = new Earthquake();
-
-
-                while(eventType != XmlPullParser.END_DOCUMENT) {
-                    if (eventType == XmlPullParser.START_DOCUMENT) {
-                    } else if (eventType == XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("item")) {
-                            eq = new Earthquake();
-                        }
-                        if (xpp.getName().equals("title")) {
-                            eq.setTitle(xpp.nextText());
-                        } else if (xpp.getName().equals("description")) {
-                            String desc = xpp.nextText();
-                            eq.setDescription(desc);
-                        } else if (xpp.getName().equals("link")) {
-                            eq.setLink(xpp.nextText());
-                        } else if (xpp.getName().equals("pubDate")) {
-                            String text = xpp.nextText();
-                            String extractedString = text.substring(text.indexOf(",") + 2, text.length() - 9);
-
-                            List<String> split = new ArrayList<String>(Arrays.asList(extractedString.split(" ")));
-                            String formatted = split.get(0) + "-" + split.get(1) + "-" + split.get(2);
-
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-                            LocalDate date = LocalDate.parse(formatted, formatter);
-                            eq.setDate(date);
-                        } else if (xpp.getName().equals("category")) {
-                            eq.setCategory(xpp.nextText());
-                        } else if (xpp.getName().equals("lat")) {
-                            eq.setLat(Double.parseDouble(xpp.nextText()));
-                        } else if (xpp.getName().equals("long")) {
-                            eq.setLon(Double.parseDouble(xpp.nextText()));
-                        }
-                    } else if (eventType == XmlPullParser.END_TAG) {
-                        if (xpp.getName().equals("item")) {
-                            list.add(eq);
-                        }
-                    }
-                    eventType = xpp.next();
-                }
-
-                earthquakes = list;
-                addEarthquakesToList(list);
-            }
-            catch (XmlPullParserException | IOException io) {
-                System.out.println(io);
-            }
-        }
-
-        public void addEarthquakesToList(ArrayList<Earthquake> earthquakes) {
-            //display earthquakes
-            EarthquakeListAdapter adapter = new EarthquakeListAdapter(view.getContext(), earthquakes);
-            recyclerView.setAdapter(adapter);
-        }
-    }
-
-    public void loadMapView(View v) {
-        Bundle args = new Bundle();
-        args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
-
-        getParentFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.frameLayout, MapViewer.class, args)
-                .commit();
-    }
-
-    public void loadFilterView(View v) {
-        Bundle args = new Bundle();
-        args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
-
-        getParentFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.frameLayout, FilterView.class, args)
-                .commit();
-    }
 }

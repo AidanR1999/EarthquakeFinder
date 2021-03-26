@@ -1,3 +1,4 @@
+//Aidan Rooney - S1911669
 package org.me.gcu.equakestartercode;
 
 import android.content.Context;
@@ -19,9 +20,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+//adapter for displaying earthquakes in list
 public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAdapter.ViewHolder>  {
-    ArrayList<Earthquake> earthquakes;
-    Context context;
+    //declare variables
+    private ArrayList<Earthquake> earthquakes;
+    private Context context;
 
     // Constructor for initialization
     public EarthquakeListAdapter(Context context, ArrayList<Earthquake> earthquakes) {
@@ -68,26 +71,38 @@ public class EarthquakeListAdapter extends RecyclerView.Adapter<EarthquakeListAd
 
     // Initializing the Views
     public class ViewHolder extends RecyclerView.ViewHolder {
+        //declare text views
         TextView titleText;
         TextView latLongText;
         TextView magnitude;
         TextView date;
 
+        //init viewholder
         public ViewHolder(View view) {
             super(view);
+
+            //init textviews
             titleText = (TextView) view.findViewById(R.id.title);
             magnitude = (TextView) view.findViewById(R.id.magnitude);
             date = (TextView) view.findViewById(R.id.date);
 
+            //set on list item click listener
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //get position
                     int index = getAdapterPosition();
 
+                    //define arguments
                     Bundle args = new Bundle();
-                    args.putSerializable("ARRAYLIST", (Serializable) earthquakes);
+                    args.putSerializable("earthquakes", (Serializable) earthquakes);
                     args.putInt("index", index);
 
+                    //set fragment to map view and save index
+                    ((MainActivity)context).setFragment(1);
+                    ((MainActivity)context).setEarthquakeSelected(index);
+
+                    //load map fragment
                     ((MainActivity)context).getSupportFragmentManager().beginTransaction()
                             .setReorderingAllowed(true)
                             .replace(R.id.frameLayout, MapViewer.class, args)
