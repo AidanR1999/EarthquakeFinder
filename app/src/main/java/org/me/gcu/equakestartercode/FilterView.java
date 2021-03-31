@@ -146,7 +146,7 @@ public class FilterView extends Fragment implements DatePickerDialog.OnDateSetLi
             ArrayList<Earthquake> filtered = new ArrayList<>();
             for(int i = 0; i < earthquakes.size(); ++i) {
                 LocalDate earthquakeDate = earthquakes.get(i).getDate();
-                if(earthquakeDate.isBefore(dateEnd) && earthquakeDate.isAfter(dateStart)) {
+                if(earthquakeDate.isBefore(dateEnd.plusDays(1)) && earthquakeDate.isAfter(dateStart.minusDays(1))) {
                     filtered.add(earthquakes.get(i));
                 }
             }
