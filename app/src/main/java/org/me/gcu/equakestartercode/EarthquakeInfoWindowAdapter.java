@@ -4,8 +4,11 @@ package org.me.gcu.equakestartercode;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -27,6 +30,7 @@ public class EarthquakeInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
     }
 
     //display earthquake information in maps info window
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View getInfoContents(Marker marker) {
         //get parent view

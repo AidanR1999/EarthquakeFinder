@@ -1,49 +1,19 @@
 //Aidan Rooney - S1911669
 package org.me.gcu.equakestartercode;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import org.me.gcu.equakestartercode.R;
-
-//displays the list of earthquakes in the last 100 days
+//displays the list of earthquakes in the last 50 days
 public class HomeFragment extends Fragment {
 
     //declare variables
@@ -78,6 +48,8 @@ public class HomeFragment extends Fragment {
             public void onRefresh() {
                 //reset refreshing
                 swipeRefreshLayout.setRefreshing(false);
+
+                Toast.makeText(view.getContext(), "Data Refreshed", Toast.LENGTH_SHORT).show();
 
                 //call startProgress to retrieve updated data
                 ((MainActivity) getActivity()).startProgress();

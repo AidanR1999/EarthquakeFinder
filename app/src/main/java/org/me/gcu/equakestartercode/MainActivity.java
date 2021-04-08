@@ -1,8 +1,7 @@
 //Aidan Rooney - S1911669
 package org.me.gcu.equakestartercode;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +11,8 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabLayout;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -27,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDate;
@@ -48,6 +43,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //hide title bar on landscape
+        int display_mode = getResources().getConfiguration().orientation;
+        if (display_mode == Configuration.ORIENTATION_LANDSCAPE) {
+            getSupportActionBar().hide();
+        }
         setContentView(R.layout.activity_main);
 
         //configure bottom navbar listener
@@ -227,6 +228,8 @@ public class MainActivity extends AppCompatActivity
                 //set result to first param
                 String result = params[0];
 
+                System.out.println(result);
+
                 //configure pull parser
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 factory.setNamespaceAware(true);
@@ -242,8 +245,7 @@ public class MainActivity extends AppCompatActivity
 
                 //for every XML tag in result, retrieve data and store in list
                 while(eventType != XmlPullParser.END_DOCUMENT) {
-                    if (eventType == XmlPullParser.START_DOCUMENT) {
-                    } else if (eventType == XmlPullParser.START_TAG) {
+                    if (eventType == XmlPullParser.START_TAG) {
                         //create new earthquake if new item is detected
                         if (xpp.getName().equals("item")) {
                             eq = new Earthquake();
@@ -254,8 +256,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         //get earthquake description
                         else if (xpp.getName().equals("description")) {
-                            String desc = xpp.nextText();
-                            eq.setDescription(desc);
+                            eq.setDescription(xpp.nextText());
                         }
                         //get earthquake date and format into LocalDate object
                         else if (xpp.getName().equals("pubDate")) {
@@ -294,7 +295,7 @@ public class MainActivity extends AppCompatActivity
             }
             catch (XmlPullParserException | IOException io) {
                 System.out.println(io);
-                return null;
+                return new ArrayList<Earthquake>();
             }
         }
 

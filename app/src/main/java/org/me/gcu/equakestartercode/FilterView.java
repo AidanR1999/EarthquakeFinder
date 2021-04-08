@@ -2,7 +2,6 @@
 package org.me.gcu.equakestartercode;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,19 +13,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.sql.SQLOutput;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 //allows the user to filter earthquakes using dates, and displays general facts about the range of earthquakes
 public class FilterView extends Fragment implements DatePickerDialog.OnDateSetListener {
@@ -48,7 +42,7 @@ public class FilterView extends Fragment implements DatePickerDialog.OnDateSetLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //inflate view
-        view = inflater.inflate(R.layout.activity_filter_view, container, false);
+        view = inflater.inflate(R.layout.fragment_filter_view, container, false);
 
         //set onclick for search
         cmdSearch = (Button) view.findViewById(R.id.cmdSearch);
@@ -151,9 +145,14 @@ public class FilterView extends Fragment implements DatePickerDialog.OnDateSetLi
                 }
             }
 
-            //pass filtered earthquakes into recycler view
-            FilteredEarthquakeListAdapter adapter = new FilteredEarthquakeListAdapter(view.getContext(), filtered);
-            recyclerView.setAdapter(adapter);
+            //check if any earthquakes between range
+            if(filtered.size() == 0) {
+                Toast.makeText(view.getContext(), "No Earthquakes Found", Toast.LENGTH_SHORT).show();
+            } else {
+                //pass filtered earthquakes into recycler view
+                FilteredEarthquakeListAdapter adapter = new FilteredEarthquakeListAdapter(view.getContext(), filtered);
+                recyclerView.setAdapter(adapter);
+            }
         }
     }
 }

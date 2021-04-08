@@ -72,6 +72,7 @@ public class Earthquake implements Serializable {
     }
 
     //parse date as string
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public String getStringDate() {
         //format MONDAY, 1 JANUARY 2021
         return date.getDayOfWeek() + ", " + date.getDayOfMonth() + " " + date.getMonth() + " " + date.getYear();
