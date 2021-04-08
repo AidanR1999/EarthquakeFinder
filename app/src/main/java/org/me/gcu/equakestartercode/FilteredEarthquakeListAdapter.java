@@ -2,18 +2,16 @@
 package org.me.gcu.equakestartercode;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 //adapter for displaying filtered earthquake information
@@ -62,8 +60,7 @@ public class FilteredEarthquakeListAdapter extends RecyclerView.Adapter<Filtered
     @NonNull
     @Override
     public FilteredEarthquakeListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflating the Layout(Instantiates list_item.xml
-        // layout file into View object)
+        // Inflating the Layout(Instantiates filtered_list_item.xml layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filtered_list_item, parent, false);
 
         // Passing view to ViewHolder
@@ -72,6 +69,7 @@ public class FilteredEarthquakeListAdapter extends RecyclerView.Adapter<Filtered
     }
 
     // Binding data to the into specified position
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull FilteredEarthquakeListAdapter.ViewHolder holder, int position) {
         //display earthquake info
