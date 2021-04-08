@@ -73,7 +73,7 @@ public class MapViewer extends Fragment implements OnMapReadyCallback {
 
         //set default value if no earthquake index
         if(index == -1) {
-            def = new LatLng(55, 0);
+            def = new LatLng(55, -3);
         } else {
             def = new LatLng(earthquakes.get(index).getLat(), earthquakes.get(index).getLon());
         }
@@ -110,7 +110,7 @@ public class MapViewer extends Fragment implements OnMapReadyCallback {
         }
 
         //move camera to default value
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(def));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(def, 5));
 
         //if show isn't null, display info window and zoom on locaiton
         if(show != null) {
